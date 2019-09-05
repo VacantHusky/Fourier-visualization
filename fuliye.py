@@ -11,8 +11,8 @@ from sys import exit
 
 WINDOW_W = 1000
 WINDOW_H = 600
-one_time = 1    # 时间流速
-scale = 2       # 缩放
+one_time = 1    # 时间流速（默认1）
+scale = 120       # 缩放（默认120）
 FPS = 60        # 帧率
 point_size = 2  # 点的大小
 start_xy = (300, WINDOW_H // 2)  # 圆的位置
@@ -25,26 +25,26 @@ b_length = 500             # 波形图显示的长度
 
 #================================#
 # 在此处设置函数
-# 此处设置的是：f(x) = 60*sin(x) + (60/3)*sin(3x) + (60/5)*sin(5x) + ...
+# 此处设置的是：f(x) = 1*sin(x) + (1/3)*sin(3x) + (1/5)*sin(5x) + ...
 # 这里是一个方形波
 # Set the function here
-# The settings here are: f(x) = 60*sin(x) + (60/3)*sin(3x) + (60/5)*sin(5x) + ...
+# The settings here are: f(x) = 1*sin(x) + (1/3)*sin(3x) + (1/5)*sin(5x) + ...
 # Here's a square wave.
 #
 # A * sin(v*(θ+ω))
 # A->r    v->angle_v    ω->angle
 # [r, angle_v, angle]
 fourier_list = [
-    [60    ,  1, 0],
-    [60 / 3,  3, 0],
-    [60 / 5,  5, 0],
-    [60 / 7,  7, 0],
-    [60 / 9,  9, 0],
-    [60 /11, 11, 0],
-    [60 /13, 13, 0],
-    [60 /15, 15, 0],
-    [60 /17, 17, 0],
-    [60 /19, 19, 0]
+    [1    ,  1, 0],
+    [1 / 3,  3, 0],
+    [1 / 5,  5, 0],
+    [1 / 7,  7, 0],
+    [1 / 9,  9, 0],
+    [1 /11, 11, 0],
+    [1 /13, 13, 0],
+    [1 /15, 15, 0],
+    [1 /17, 17, 0],
+    [1 /19, 19, 0]
 ]
 #================================#
 
@@ -157,11 +157,11 @@ while True:
                 one_time = max(one_time,0.1)
             elif event.key == K_RIGHT and one_time<10:
                 one_time *= 1.1
-            elif (event.key == K_EQUALS or event.key == K_PLUS) and scale<10:
+            elif (event.key == K_EQUALS or event.key == K_PLUS) and scale<800:
                 scale *= 1.1
-            elif event.key == K_MINUS and scale>0.1:
+            elif event.key == K_MINUS and scale>2:
                 scale *= 0.9
-                scale = max(scale,0.1)
+                scale = max(scale,2)
             elif event.key == K_l and b_scale<10:
                 b_scale *= 1.1
             elif event.key == K_k and b_scale>0.1:
