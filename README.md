@@ -49,3 +49,17 @@ fourier_list = [
 ]
 ```
 当然，你也可以继续追加，让它更逼近方形波。
+
+或者这样：
+```python
+fourier_list = []
+for i in range(1,1000,2):
+    fourier_list.append([1/i,i,0])
+```
+
+还有锯齿波：
+```python
+fourier_list = []
+for i in range(1,1000,1):
+    fourier_list.append([1/i,i,0])
+```
