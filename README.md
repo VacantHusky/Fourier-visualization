@@ -3,7 +3,7 @@
 
 效果图：
 
-![./fuliye3-2 (2).gif](./fuliye3-2 (2).gif)
+![fuliye3-2 (2).gif](fuliye3-2 (2).gif)
 
 ##  配置
 
