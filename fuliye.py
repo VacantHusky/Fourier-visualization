@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 –*-
 # python3
-# 傅里叶变换可视化
+# 傅里叶变换可视化（波形图）
 # Author: WangHu
 # Mail:   wanghu10158@gmail.com
-# Last Updated: 2019-09-05
+# Last Updated: 2019-11-30
 
 import pygame, math, time, random, os
 from pygame.locals import *
@@ -12,14 +12,14 @@ from sys import exit
 WINDOW_W = 1000
 WINDOW_H = 600
 one_time = 1    # 时间流速（默认1）
-scale = 120       # 缩放（默认120）
+scale = 120     # 缩放（默认120）
 FPS = 60        # 帧率
 point_size = 2  # 点的大小
 start_xy = (300, WINDOW_H // 2)  # 圆的位置
 
 # 波形图参数
 b_xy = (600, start_xy[1])  # 波形图原点坐标
-b_scale = 0.8              # 波形图缩放
+b_scale = 1              # 波形图缩放
 b_color = (200, 200, 0)    # 波形图颜色
 b_length = 500             # 波形图显示的长度
 
@@ -34,19 +34,49 @@ b_length = 500             # 波形图显示的长度
 # A * sin(v*(θ+ω))
 # A->r    v->angle_v    ω->angle
 # [r, angle_v, angle]
-fourier_list = [
-    [1    ,  1, 0],
-    [1 / 3,  3, 0],
-    [1 / 5,  5, 0],
-    [1 / 7,  7, 0],
-    [1 / 9,  9, 0],
-    [1 /11, 11, 0],
-    [1 /13, 13, 0],
-    [1 /15, 15, 0],
-    [1 /17, 17, 0],
-    [1 /19, 19, 0]
-]
-#================================#
+# fourier_list = [
+#     [1    ,  1, 0],
+#     [1 / 3,  2, 0],
+#     [1 / 5,  3, 0],
+#     [1 / 7,  4, 0],
+#     [1 / 9,  5, 0],
+#     [1 /11, 6, 0],
+#     [1 /13, 7, 0],
+#     [1 /15, 8, 0],
+#     [1 /17, 9, 0],
+#     [1 /19, 10, 0]
+# ]
+
+def get_wave(name='方波',max_i=20):
+    '''
+    从这里可以获得一些特定的波形
+    :param name: 波形的名字：方波，锯齿波，半圆波，三角波
+    :param max_i: 用多少个三角函数来拟合它
+    :return: 该波形的参数列表
+    '''
+    max_i = max(max_i,1)
+    fourier_list = []
+    if name == '方波':
+        A_max = 4/math.pi
+        for i in range(1,max_i):
+            fourier_list.append([A_max/(2*i-1),2*i-1,0])
+    elif name == '锯齿波':
+        A_max = 1 / math.pi
+        for i in range(1,max_i):
+            fourier_list.append([A_max/i,i,0])
+    elif name == '半圆波':
+        A_max = 8/(math.pi**2)
+        for i in range(1,max_i):
+            fourier_list.append([A_max/(2*i-1)**2,2*i-1,0])
+    elif name == '三角波':
+        A_max = 8/(math.pi**2)
+        for i in range(1,max_i):
+            fourier_list.append([A_max*((-1)**(i-1))/(2*i-1)**2,2*i-1,0])
+    else:
+        raise TypeError('未知的类型')
+    return fourier_list
+
+fourier_list = get_wave('三角波')
 
 # 圆圈的颜色来自于这里，你可以随意添加、删除
 color_list = [
@@ -109,10 +139,9 @@ class Circle():
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), point_size)
         # 画轨道
         if self.father is not None:
-            pygame.draw.circle(screen, color_an, (int(self.father.x), int(self.father.y)), max(int(self.r * scale), 1),
-                               1)
+            pygame.draw.circle(screen, color_an, (int(self.father.x), int(self.father.y)), max(int(self.r * scale), 1),1)
             pygame.draw.line(screen, self.color, (int(self.father.x), int(self.father.y)), (int(self.x), int(self.y)),
-                             1)
+                            1)
 
 
 class Boxin():
@@ -143,7 +172,6 @@ for i in range(len(fourier_list)):
 
 bx = Boxin()
 clock = pygame.time.Clock()
-nnn = 0
 # 游戏主循环
 while True:
     for event in pygame.event.get():
@@ -159,9 +187,9 @@ while True:
                 one_time *= 1.1
             elif (event.key == K_EQUALS or event.key == K_PLUS) and scale<800:
                 scale *= 1.1
-            elif event.key == K_MINUS and scale>2:
+            elif event.key == K_MINUS and scale>0.001:
                 scale *= 0.9
-                scale = max(scale,2)
+                scale = max(scale,0.001)
             elif event.key == K_l and b_scale<10:
                 b_scale *= 1.1
             elif event.key == K_k and b_scale>0.1:
@@ -187,7 +215,6 @@ while True:
     bx.draw(screen)
 
     # 画文字
-
     text_obj = font.render('傅里叶变换可视化', 1, (255,255,255))
     screen.blit(text_obj, (10,10))
     text_obj = font.render('左右键：加速/减速', 1, (255,255,255))
@@ -203,8 +230,5 @@ while True:
     text_obj = font.render('FPS：{}'.format(clock.get_fps()), 1, (255,255,255))
     screen.blit(text_obj, (10,140))
 
-
     pygame.display.update()
-    # pygame.image.save(screen, "./catch/catch-{:04d}.png".format(nnn))
-    nnn += 1
     time_passed = clock.tick(FPS)
