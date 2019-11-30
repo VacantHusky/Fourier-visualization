@@ -4,6 +4,7 @@
 效果图：
 
 ![fuliye.gif](fuliye.gif)
+![心形](fuliye-heart.gif)
 
 ##  配置
 
@@ -19,7 +20,10 @@ pip3 install pygame -i https://mirrors.aliyun.com/pypi/simple
 
 ## 运行
 ```shell
+# 绘制波形
 python3 fuliye.py
+# 绘制二维图形
+python3 fuliye2.py
 ```
 
 运行后可以：
@@ -27,7 +31,7 @@ python3 fuliye.py
 * +/-键：放大/缩小
 * L/K键：波形图放大/缩小
 
-### 函数
+### 函数(fuliye.py)
 将你想要显示的波形函数以这种形式写在fourier_list（代码中第37行）中。
 例如：
 ```
@@ -64,3 +68,10 @@ fourier_list = []
 for i in range(1,1000,1):
     fourier_list.append([1/i,i,0])
 ```
+
+=== **更新** ===
+新写了一个函数：get_wave
+具体用法参见代码中的示例
+
+### 函数
+参见代码中的示例
